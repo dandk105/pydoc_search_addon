@@ -1,0 +1,38 @@
+{
+    "manifest_version": 2,
+    "name": "searchpydoc",
+    "author": "dak",
+    "version": "0.1",
+
+    "description": "search strings inputted words on pydoc only",
+
+    "icons": {
+        "48": "icons/sakura48.png",
+        "96": "icons/sakura96.png"
+    },
+
+    "browser_action": {
+        "default_title": "searchpydoc",
+        "default_popup": "popup/search_base.html",
+        "browser_style": true
+    },
+
+    "background": {
+        "scripts": ["backscript.js"]
+    },
+
+    "options-ui": {
+        "page" : "optionpage/option.html"
+    },
+
+    "permissions": ["*://docs.python.org/*","find","storage","tabs"],
+
+    "content_scripts": [
+        {
+            "matches": ["*://docs.python.org/*"],
+            "js": ["search.js"]
+        }
+    ],
+
+    "content_security_policy": "script-src 'self' https://kit.fontawesome.com; object-src 'self'"
+}

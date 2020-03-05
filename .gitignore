@@ -1,0 +1,14 @@
+# node_modules
+node_modules/
+
+#.vscode
+.vscode/
+
+#package-lock
+package-lock.json
+
+#txt
+*.txt
+
+#png
+icons/
