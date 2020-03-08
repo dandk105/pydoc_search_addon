@@ -20,9 +20,21 @@ function Connected(port) {
   }
 }
 
-browser.runtime.onConnect.addListener(Connected);
+window.browser.runtime.onConnect.addListener(Connected);
 
-// send message to contents script
-function ConectedPopups(popup) {
-  let port = browser.tabs.connect();
+function connectToTab(tabs) {
+  if (tabs.length > 0) {
+    const examplePort = window.browser.tabs.connect(
+      tabs[0].id,
+      { name: 'tabs-popup-port' }
+    );
+    examplePort.postMessage({ greeting: 'Hi from background script' })
+  }
 }
+
+window.browser.browserAction.onClicked.addListener((e) => {
+  const gettingActive = window.browser.tabs.query({
+    currentyWindow: true, active: true
+  });
+  gettingActive.then(connectToTab, onError);
+});

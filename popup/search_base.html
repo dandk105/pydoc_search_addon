@@ -7,23 +7,26 @@
 </head>
 <body>
     <header class="site-header">
-        <h1>search py doc</h1>
         <i class="fab fa-python"></i>
+        <h1>search py doc</h1>
     </header>
     <div class="site-contents">
         <form id="submit-form">
-            <input type="text" name="checkwords" id="search-box" placeholder="search words:">
+            <input type="search" name="checkwords" id="search-box" placeholder="search words:">
             <button type="submit" id="submit-button">
                 <i class="fas fa-search"></i>
             </button>
         </form>
-        <h2 id="result-tittle">HIT:</h2>
-        <li id="result-box"></li>
+        <div id="result-box">
+            <h2 id="result-tittle">HIT:</h2>
+            <li id="result-list"></li>
+        </div>
     </div>
     <footer class="site-footer">
         <i class="far fa-copyright"></i>
-        <p>daichi kawakami</p>
+        <p>dandk105</p>
+        <a id="jump-option">jump option page</a>
     </footer>
-    <script src="./popup.js"></script>
+    <script src="popup.js" type="module"></script>
 </body>
 </html>

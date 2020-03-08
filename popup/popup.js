@@ -1,7 +1,7 @@
 // tab level:2
 
 const portname = { name: 'popup-to-background' };
-const backscPort = browser.runtime.connect(portname);
+const backscPort = window.browser.runtime.connect(portname);
 
 /*
  * form element.
@@ -9,6 +9,8 @@ const backscPort = browser.runtime.connect(portname);
 */
 const target = document.querySelector('#submit-form');
 const input = document.querySelector('#search-box');
+const dumybtn = document.querySelector('#submit-button');
+const a_option = document.querySelector('#jump-option');
 
 /**
  * create new JSON object to send background script.
@@ -16,8 +18,8 @@ const input = document.querySelector('#search-box');
  * @param {} string
  */
 function ConvertValues(value) {
-  let messObj = {};
-  const tempArr = { str: `{"greeting":"${value}"}`, other: `{"greeting":${value}}` };
+  let messObj = '';
+  let tempArr = { str: `{"greeting":"${value}"}`, other: `{"greeting":${value}}` };
   if (typeof (value) === 'string') {
     messObj = tempArr.str;
   } else {
@@ -31,14 +33,24 @@ function ConvertValues(value) {
  * recived parameters send background script
  * @param {JSON object} message
  */
-function SendmessBacksc(message) {
+function SendmessBacksc(message, time) {
   backscPort.postMessage(message);
 }
 
-target.addEventListener('submit', (e) => {
-  // event target string
-  SendmessBacksc();
-});
+// we should think this block well.
+target.addEventListener('submit', SendmessBacksc);
+
+function SendinputsValue(e) {
+  const strings = e.targt.value;
+  const mess = ConvertValues(strings);
+  SendmessBacksc(mess);
+}
+
+input.addEventListener('keypress', SendinputsValue);
+
+dumybtn.addEventListener('click', (e) => {
+  e.preventDefault();
+}, true);
 
 // insert dom to popup page
 function InsertAnchour() {
@@ -47,7 +59,7 @@ function InsertAnchour() {
   parent.appendChild(a);
 }
 
-// will send a stand by message to background script when popup html and js are loaded
-window.addEventListener('load', (e) => {
-  console.log('compleate load elements.');
-});
+function JumpOption() {
+  window.browser.runtime.openOptionsPage();
+}
+a_option.addEventListener('click', JumpOption);

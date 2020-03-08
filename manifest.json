@@ -22,7 +22,7 @@
     },
 
     "options-ui": {
-        "page" : "optionpage/option.html"
+        "page" : "optionpage/optionpage.html"
     },
 
     "permissions": ["*://docs.python.org/*","find","storage","tabs"],
