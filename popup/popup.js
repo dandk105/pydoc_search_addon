@@ -1,16 +1,12 @@
 // tab level:2
 
+// initialize
 const portname = { name: 'popup-to-background' };
-const backscPort = window.browser.runtime.connect(portname);
+const myPort = window.browser.runtime.connect(portname);
 
-/*
- * form element.
- * this is named target.
-*/
-const target = document.querySelector('#submit-form');
-const input = document.querySelector('#search-box');
-const dumybtn = document.querySelector('#submit-button');
-const a_option = document.querySelector('#jump-option');
+let SearchForm;
+let SearchInput;
+let JumpOption;
 
 /**
  * create new JSON object to send background script.
@@ -18,48 +14,59 @@ const a_option = document.querySelector('#jump-option');
  * @param {} string
  */
 function ConvertValues(value) {
-  let messObj = '';
-  let tempArr = { str: `{"greeting":"${value}"}`, other: `{"greeting":${value}}` };
+  let messObj;
+  const tempArr = { str: `{"greeting":"${value}"}`, other: `{"greeting":${value}}` };
   if (typeof (value) === 'string') {
     messObj = tempArr.str;
   } else {
     messObj = tempArr.other;
+  } try {
+    const messJSONobj = JSON.parse(messObj);
+    return messJSONobj;
+  } catch (e) {
+    console.error(e);
   }
-  const messJSONobj = JSON.parse(messObj);
-  return messJSONobj;
 }
+
+function GetValue(e) {
+  let message;
+  const cpvalue = e.target.value;
+  message = ConvertValues(cpvalue);
+  return message;
+}
+
+SearchInput = document.querySelector('#search-box');
+SearchInput.addEventListener('input', GetValue);
 
 /**
  * recived parameters send background script
- * @param {JSON object} message
+ * this function only accept JSON obj
+ *  which is converted mesage to send to backsc
+ * @param {JSON} messages
  */
-function SendmessBacksc(message, time) {
-  backscPort.postMessage(message);
+function SendmessBacksc(mess) {
+  myPort.postMessage(mess);
 }
 
-// we should think this block well.
-target.addEventListener('submit', SendmessBacksc);
-
-function SendinputsValue(e) {
-  const strings = e.targt.value;
-  const mess = ConvertValues(strings);
-  SendmessBacksc(mess);
-}
-
-input.addEventListener('keypress', SendinputsValue);
-
-dumybtn.addEventListener('click', (e) => {
-  e.preventDefault();
-}, true);
+// we should think about this block well.
+SearchForm = document.querySelector('#submit-form');
+SearchForm.addEventListener('submit', SendmessBacksc, false);
 
 // insert dom to popup page
-function InsertAnchour() {
+function InsertAnchour(e) {
   const parent = document.querySelector('#result-box');
+  const str = e;
+  console.log(str);
   const a = document.createElement('a');
   parent.appendChild(a);
 }
 
-function JumpOption() {
+// fire this code when the port obj recived message from backsc.
+myPort.onMessage.addListener(InsertAnchour);
+
+function JumpOptionPage() {
   window.browser.runtime.openOptionsPage();
 }
-a_option.addEventListener('click', JumpOption);
+
+JumpOption = document.querySelector('#jump-option');
+JumpOption.addEventListener('click', JumpOptionPage);

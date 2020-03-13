@@ -1,25 +1,26 @@
-
+// tab level: 2
 /**
  *generate arr to Recive multipule Port objects
  */
-let Ports = [];
-let menuPorts = [];
+const Ports = [];
+const menuPorts = [];
 
 /**
- * @param {a runtime.Port object }
- * recived parameters add Ports arry.
+ * @param {a runtime.Port}
+ * this function only called onConnect event for runtime.
+ * That's why argument is only a port object.
  */
 function Connected(port) {
-  let { data } = {};
-  // couldnt all copy of port object.
+  let data = {};
   data = port.sender;
   if ('tab' in data) {
-    Ports[port.sender.tab.id] = port;
+    Ports.push(data);
   } else {
-    menuPorts[port.sender.id] = port;
+    menuPorts.push(data);
   }
 }
 
+// onConnect event only accept port object.
 window.browser.runtime.onConnect.addListener(Connected);
 
 function connectToTab(tabs) {
@@ -28,13 +29,13 @@ function connectToTab(tabs) {
       tabs[0].id,
       { name: 'tabs-popup-port' }
     );
-    examplePort.postMessage({ greeting: 'Hi from background script' })
+    examplePort.postMessage({ greeting: 'Hi from background script' });
   }
 }
 
-window.browser.browserAction.onClicked.addListener((e) => {
+window.browser.browserAction.onClicked.addListener(() => {
   const gettingActive = window.browser.tabs.query({
-    currentyWindow: true, active: true
+    currentyWindow: true, active: true,
   });
   gettingActive.then(connectToTab, onError);
 });
